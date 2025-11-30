@@ -47,6 +47,5 @@ void Jato::setResultadoNewtonRaphson(Resultado res) {
 bool Jato::isSeguro() const {
     // Verifica se d > 2 cm (perigo de explosão)
     double d = resultado_bisseccao.getRaiz();
-    return d <= 2.0 && !isnan(d);
+    return d <= 2.0 && !std::isnan(d);
 }
-
