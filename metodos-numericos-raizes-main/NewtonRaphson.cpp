@@ -20,7 +20,7 @@ Resultado NewtonRaphson::calcular(double x0) {
         double fx = funcao->calcular(x);
         double dfx = funcao->calcularDerivada(x);
         
-        if (abs(dfx) < 1e-10) {
+        if (std::abs(dfx) < 1e-10) {
             resultado.setRaiz(NAN);
             resultado.setErro(NAN);
             return resultado;
@@ -30,10 +30,10 @@ Resultado NewtonRaphson::calcular(double x0) {
         x = x - fx / dfx;
         resultado.setIteracoes(resultado.getIteracoes() + 1);
         
-        double erro_atual = abs(x - x_ant);
+        double erro_atual = std::abs(x - x_ant);
         resultado.setErro(erro_atual);
         
-        if (erro_atual < epsilon || abs(fx) < epsilon) {
+        if (erro_atual < epsilon || std::abs(fx) < epsilon) {
             resultado.setRaiz(x);
             resultado.setConvergiu(true);
             return resultado;
