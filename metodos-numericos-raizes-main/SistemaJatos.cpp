@@ -21,18 +21,23 @@ void SistemaJatos::setEpsilon(double eps) {
 }
 
 std::pair<double, double> SistemaJatos::encontrarIsolamento(FuncaoJato* funcao) {
-    double a = funcao->getParametroA();
-    double raiz_teorica = exp(a);
+    double inicio = 0.1; 
+    double passo = 0.5;  
+    double max_busca = 100.0; 
     
-    double a0 = std::max(0.1, raiz_teorica - 1.0);
-    double b0 = raiz_teorica + 1.0;
+    double a = inicio;
+    double b = a + passo;
     
-    while (funcao->calcular(a0) * funcao->calcular(b0) > 0 && a0 > 0.01) {
-        a0 = a0 / 2.0;
-        b0 = b0 * 1.5;
+    while (funcao->calcular(a) * funcao->calcular(b) > 0) {
+        a = b;
+        b = a + passo;
+        
+        if (b > max_busca) {
+            return std::make_pair(1.0, 2.0); 
+        }
     }
     
-    return std::make_pair(a0, b0);
+    return std::make_pair(a, b);
 }
 
 void SistemaJatos::processarJatos() {
@@ -48,7 +53,9 @@ void SistemaJatos::processarJatos() {
         
         Resultado res_bis = bisseccao.calcular(isol.first, isol.second);
         Resultado res_pf = posicaoFalsa.calcular(isol.first, isol.second);
-        Resultado res_nr = newtonRaphson.calcular(isol.first, isol.second);
+        
+        double x0_newton = (isol.first + isol.second) / 2.0;
+        Resultado res_nr = newtonRaphson.calcular(x0_newton);
         
         jato.setResultadoBisseccao(res_bis);
         jato.setResultadoPosicaoFalsa(res_pf);
@@ -57,10 +64,9 @@ void SistemaJatos::processarJatos() {
 }
 
 void SistemaJatos::executarTestePadrao() {
-    std::cout << "\n=== TESTE PADRAO (Questão d) ===" << std::endl;
+    std::cout << "\n=== TESTE PADRAO (Questao d) ===" << std::endl;
     std::cout << "a = 1, isolamento = (2, 3), epsilon = 1E-5" << std::endl;
     
-
     double epsilon_teste = 0.00001;
     
     FuncaoJato funcao(1.0);
@@ -73,10 +79,10 @@ void SistemaJatos::executarTestePadrao() {
     Resultado res_nr = newtonRaphson.calcular(2.5);
     
     std::cout << "\nResultados do teste padrao:" << std::endl;
-    std::cout << "Bissecção:    d = " << std::fixed << std::setprecision(10) << res_bis.getRaiz() 
+    std::cout << "Bisseccao:    d = " << std::fixed << std::setprecision(10) << res_bis.getRaiz() 
          << ", erro = " << std::scientific << res_bis.getErro() 
          << ", iteracoes = " << res_bis.getIteracoes() << std::endl;
-    std::cout << "Posição Falsa: d = " << std::fixed << std::setprecision(10) << res_pf.getRaiz() 
+    std::cout << "Posicao Falsa: d = " << std::fixed << std::setprecision(10) << res_pf.getRaiz() 
          << ", erro = " << std::scientific << res_pf.getErro() 
          << ", iteracoes = " << res_pf.getIteracoes() << std::endl;
     std::cout << "Newton-Raphson: d = " << std::fixed << std::setprecision(10) << res_nr.getRaiz() 
@@ -87,7 +93,7 @@ void SistemaJatos::executarTestePadrao() {
 void SistemaJatos::exibirQuadroResposta() {
     std::cout << "\n\n=== QUADRO RESPOSTA ===" << std::endl;
     std::cout << std::setw(8) << "Jato" << std::setw(12) << "a" 
-         << std::setw(20) << "d (Bissecção)" << std::setw(15) << "Erro (Bis)" 
+         << std::setw(20) << "d (Bisseccao)" << std::setw(15) << "Erro (Bis)" 
          << std::setw(20) << "d (Pos. Falsa)" << std::setw(15) << "Erro (PF)"
          << std::setw(20) << "d (N-R)" << std::setw(15) << "Erro (N-R)" << std::endl;
     std::cout << std::string(135, '-') << std::endl;
@@ -227,7 +233,7 @@ void SistemaJatos::exibirVerificacaoSeguranca() {
         Resultado res_pf = jato.getResultadoPosicaoFalsa();
         Resultado res_nr = jato.getResultadoNewtonRaphson();
         
-        std::cout << "  Bissecção:    d = " << std::setprecision(10) << res_bis.getRaiz();
+        std::cout << "  Bisseccao:    d = " << std::setprecision(10) << res_bis.getRaiz();
         if (res_bis.getRaiz() > 2.0) {
             std::cout << " [PERIGO - EXPLOSAO!]";
         } else {
@@ -235,7 +241,7 @@ void SistemaJatos::exibirVerificacaoSeguranca() {
         }
         std::cout << std::endl;
         
-        std::cout << "  Posição Falsa: d = " << res_pf.getRaiz();
+        std::cout << "  Posicao Falsa: d = " << res_pf.getRaiz();
         if (res_pf.getRaiz() > 2.0) {
             std::cout << " [PERIGO - EXPLOSAO!]";
         } else {
@@ -256,4 +262,3 @@ void SistemaJatos::exibirVerificacaoSeguranca() {
 std::vector<Jato> SistemaJatos::getJatos() const {
     return jatos;
 }
-
