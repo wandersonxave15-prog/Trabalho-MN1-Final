@@ -27,10 +27,10 @@ Resultado PosicaoFalsa::calcular(double a0, double b0) {
         double fx = funcao->calcular(x);
         resultado.setIteracoes(resultado.getIteracoes() + 1);
         
-        double erro_atual = abs(x - x_ant);
+        double erro_atual = std::abs(x - x_ant);
         resultado.setErro(erro_atual);
         
-        if (erro_atual < epsilon || abs(fx) < epsilon) {
+        if (erro_atual < epsilon || std::abs(fx) < epsilon) {
             resultado.setRaiz(x);
             resultado.setConvergiu(true);
             return resultado;
