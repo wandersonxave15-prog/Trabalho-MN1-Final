@@ -37,10 +37,10 @@ Resultado Bisseccao::calcular(double a0, double b0) {
         double fx = funcao->calcular(x);
         resultado.setIteracoes(resultado.getIteracoes() + 1);
         
-        double erro_atual = abs(b_val - a_val) / 2.0;
+        double erro_atual = std::abs(b_val - a_val) / 2.0;
         resultado.setErro(erro_atual);
         
-        if (erro_atual < epsilon || abs(fx) < epsilon) {
+        if (erro_atual < epsilon || std::abs(fx) < epsilon) {
             resultado.setRaiz(x);
             resultado.setConvergiu(true);
             return resultado;
