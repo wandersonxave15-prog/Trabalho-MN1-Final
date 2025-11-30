@@ -259,6 +259,7 @@ void SistemaJatos::exibirVerificacaoSeguranca() {
     }
 }
 
+
 std::vector<Jato> SistemaJatos::getJatos() const {
     return jatos;
 }
